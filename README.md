@@ -1,18 +1,52 @@
-# Claude Code Source - Buildable Research Fork
+# Mythos CLI
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 [![Bun](https://img.shields.io/badge/runtime-Bun-f9f1e1?logo=bun)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/lang-TypeScript-3178c6?logo=typescript&logoColor=white)]()
 [![Lines of Code](https://img.shields.io/badge/lines-512K+-blue)]()
 [![License](https://img.shields.io/badge/license-research%20only-orange)]()
-[![Stars](https://img.shields.io/github/stars/beita6969/claude-code?style=social)](https://github.com/beita6969/claude-code/stargazers)
-[![Forks](https://img.shields.io/github/forks/beita6969/claude-code?style=social)](https://github.com/beita6969/claude-code/network/members)
+[![Stars](https://img.shields.io/github/stars/warpirate/mythos-code?style=social)](https://github.com/warpirate/mythos-code/stargazers)
+[![Forks](https://img.shields.io/github/forks/warpirate/mythos-code?style=social)](https://github.com/warpirate/mythos-code/network/members)
 
-> A **buildable, modifiable, and runnable** version of the Claude Code source.
+> **The terminal speaks in tongues.** A buildable, modifiable Claude Code fork with an OpenCode-inspired TUI.
 
-Based on the Claude Code source snapshot publicly exposed on 2026-03-31 via an npm source map leak. The original snapshot contained only raw TypeScript source with no build configuration — it could not be compiled or run. This fork reconstructs the full build system and fixes all missing components to make it functional.
+Mythos takes the full Claude Code agentic engine (40+ tools, MCP, memory, skills, multi-agent) and wraps it in a terminal UI inspired by [OpenCode](https://github.com/anomalyco/opencode) — built with React + Ink.
 
-**[Quick Start](#quick-start)** | **[Architecture](#architecture-overview)** | **[Feature Flags](#feature-flags)** | **[Extension Guide](#extension-points-no-source-modification-needed)**
+---
+
+## Preview
+
+<p align="center">
+  <img src="assets/videos/welcome.gif" alt="Mythos CLI welcome screen" width="720" />
+</p>
+
+<details>
+<summary><strong>Theme showcase</strong> — 8 built-in themes (opencode, catppuccin, dracula, tokyonight, gruvbox, solarized, nord)</summary>
+<br>
+<p align="center">
+  <img src="assets/videos/themes.gif" alt="Theme switching demo" width="720" />
+</p>
+</details>
+
+<details>
+<summary><strong>Interactive session</strong> — streaming responses, tool calls, inline diffs</summary>
+<br>
+<p align="center">
+  <img src="assets/videos/session.gif" alt="Chat session demo" width="720" />
+</p>
+</details>
+
+<details>
+<summary><strong>Sidebar layout</strong> — context tokens, MCP servers, modified files</summary>
+<br>
+<p align="center">
+  <img src="assets/videos/sidebar.gif" alt="Sidebar demo" width="720" />
+</p>
+</details>
+
+---
+
+**[Quick Start](#quick-start)** | **[Features](#features)** | **[Architecture](#architecture-overview)** | **[Theming](#theming)** | **[Keybinds](#keybinds)** | **[Extension Guide](#extension-points)**
 
 ---
 
@@ -26,34 +60,30 @@ Based on the Claude Code source snapshot publicly exposed on 2026-03-31 via an n
 ### Install & Run
 
 ```bash
-git clone https://github.com/beita6969/claude-code.git
-cd claude-code
+git clone https://github.com/warpirate/mythos-code.git
+cd mythos-code
 
-# Install dependencies (auto-creates bun:bundle polyfill via postinstall)
+# Install dependencies
 bun install
 
-# Run directly
-bun src/main.tsx -p "your prompt here" --output-format text
-```
+# Copy env config
+cp .env.example .env
 
-### Build (Optional)
-
-```bash
-# Compile to single bundle (~20MB)
-bun build src/main.tsx --outdir=dist --target=bun
+# Run
+bun run dev
 ```
 
 ### Run Modes
 
 ```bash
+# Interactive TUI (default)
+bun run dev
+
 # Headless print mode (no TTY needed)
-bun src/main.tsx -p "your prompt here" --output-format text
+bun src/entrypoints/cli.tsx -p "your prompt here" --output-format text
 
 # JSON output
-bun src/main.tsx -p "your prompt here" --output-format json
-
-# Interactive REPL mode (needs TTY)
-bun src/main.tsx
+bun src/entrypoints/cli.tsx -p "your prompt here" --output-format json
 ```
 
 > **Note**: If `ANTHROPIC_API_KEY` is set in your environment, it must be valid. To use OAuth instead, unset it:
@@ -63,42 +93,35 @@ bun src/main.tsx
 
 ---
 
-## What Changed vs. the Original Snapshot
+## Features
 
-The original snapshot shipped **no `package.json`, no `tsconfig.json`, no lockfile, and no build scripts**. Over 100 internal/feature-gated modules were also missing from the source map.
+### OpenCode-Style TUI
+- **Split-pane layout** — message area + collapsible sidebar (auto-hides below 120 cols)
+- **Header bar** — active agent, model name, session title
+- **Footer bar** — keybind hints, MCP server count, working directory
+- **Prompt bar** — bordered input with agent label, cursor blinking, `@` file autocomplete, `/` command autocomplete
 
-### Build System (Reconstructed)
+### 8 Built-in Themes
+`opencode` (default dark) · `catppuccin-mocha` · `catppuccin-latte` (light) · `dracula` · `tokyonight` · `gruvbox` · `solarized` · `nord`
 
-| File | Purpose |
-|------|---------|
-| `package.json` | 60+ npm dependencies reverse-engineered from ~1,900 source files |
-| `tsconfig.json` | TypeScript config (ESNext + JSX + Bun bundler resolution) |
-| `bunfig.toml` | Bun runtime configuration |
-| `scripts/postinstall.sh` | Auto-creates `bun:bundle` runtime polyfill after `bun install` |
-| `.gitignore` | Excludes `node_modules/`, `dist/`, lockfiles |
+### Session Sidebar
+- Token usage (context window)
+- Running cost
+- Current model
+- MCP server status (connected/error/connecting)
+- Modified files with diff indicators (+/~/-)
 
-### Stub Modules (Created)
+### Dialogs
+- **Command palette** (`ctrl+k`) — fuzzy search all commands
+- **Model selector** — switch models on the fly
+- **Theme selector** — live theme switching
 
-The original source imports many Anthropic-internal packages and feature-gated modules that were not included in the leak. Minimal stubs were created so the build completes:
-
-| Category | Count | Examples |
-|----------|-------|---------|
-| Anthropic internal packages (`@ant/*`) | 4 | computer-use-mcp, computer-use-swift, claude-for-chrome-mcp |
-| Native addons | 3 | color-diff-napi, audio-capture-napi, modifiers-napi |
-| Cloud provider SDKs | 6 | Bedrock/Foundry/Vertex SDK, AWS STS, Azure Identity |
-| OpenTelemetry exporters | 10 | OTLP gRPC/HTTP/Proto exporters |
-| Other optional packages | 2 | sharp, turndown |
-| Feature-gated source modules | ~90 | Tools, commands, services, components excluded from the source map |
-
-### Source Fixes
-
-| File | Change |
-|------|--------|
-| `src/main.tsx` | Runtime `MACRO` constant injection (compile-time define in production) |
-| `src/main.tsx` | Fixed Commander.js `-d2e` short flag incompatibility |
-| `src/bootstrap/state.ts` | Added missing `isReplBridgeActive()` export |
-| `src/types/connectorText.ts` | Added `isConnectorTextBlock` function stub |
-| `src/tools/WorkflowTool/constants.ts` | Added `WORKFLOW_TOOL_NAME` export |
+### Full Claude Code Engine
+- 40+ tools (file read/write/edit, bash, grep, glob, web search, MCP, etc.)
+- Multi-agent coordination (build + plan agents, switchable with Tab)
+- Persistent memory system (user/feedback/project/reference)
+- Skill system with SKILL.md templates
+- MCP server management (stdio/http/sse/ws)
 
 ---
 
@@ -106,49 +129,98 @@ The original source imports many Anthropic-internal packages and feature-gated m
 
 ```
 src/
-├── main.tsx              # CLI entrypoint (Commander.js + React/Ink)
+├── entrypoints/cli.tsx   # CLI entrypoint
 ├── QueryEngine.ts        # Core LLM API engine
 ├── query.ts              # Agentic loop (async generator)
-├── Tool.ts               # Tool type definitions
-├── tools.ts              # Tool registry
-├── commands.ts           # Command registry
-├── context.ts            # System prompt context
+├── Tool.ts / tools.ts    # Tool types & registry
 │
+├── components/           # React/Ink TUI (OpenCode-style)
+│   ├── Session/          # Header, Footer, Sidebar, MythosChrome
+│   ├── Dialogs/          # CommandPalette, ModelSelector, ThemeSelector
+│   ├── Home/             # Session list / home screen
+│   ├── LogoV2/           # MYTHOS block logo + welcome
+│   ├── PromptInput/      # Prompt bar with autocomplete
+│   └── shared/           # Spinner, StyledBox, Toast, ToolCallBox
+│
+├── utils/theme/          # Theme engine (8 themes, custom theme loading)
 ├── tools/                # 40+ tool implementations
-│   ├── AgentTool/        # Sub-agent spawning & coordination
-│   ├── BashTool/         # Shell command execution
-│   ├── FileReadTool/     # File reading
-│   ├── FileEditTool/     # File editing
-│   ├── GrepTool/         # ripgrep-based search
-│   ├── MCPTool/          # MCP server tool invocation
-│   ├── SkillTool/        # Skill execution
-│   └── ...
-│
-├── services/             # External integrations
-│   ├── api/              # Anthropic API client
-│   ├── mcp/              # MCP server management
-│   └── ...
-│
+├── services/             # API, MCP, external integrations
 ├── memdir/               # Persistent memory system
-├── skills/               # Skill system (bundled + user)
-├── components/           # React/Ink terminal UI
-├── hooks/                # React hooks
+├── skills/               # Skill system
 ├── coordinator/          # Multi-agent orchestration
 └── stubs/                # Stub packages for missing internals
 ```
 
 ### Key Systems
 
-| System | Files | Description |
-|--------|-------|-------------|
-| **Agentic Loop** | `query.ts`, `QueryEngine.ts` | `while(true)` async generator: query -> tool calls -> results -> loop |
-| **Memory** | `memdir/` | 4-type file-based memory (user/feedback/project/reference) with MEMORY.md index |
-| **MCP** | `services/mcp/` | Model Context Protocol server management (stdio/http/sse/ws) |
-| **Skills** | `skills/`, `tools/SkillTool/` | Reusable workflow templates (SKILL.md format) |
-| **Agents** | `tools/AgentTool/` | Custom agent types via `.claude/agents/*.md` |
-| **System Prompt** | `constants/prompts.ts` | Layered prompt: static -> dynamic -> memory -> agent |
+| System | Description |
+|--------|-------------|
+| **Agentic Loop** | `while(true)` async generator: query → tool calls → results → loop |
+| **Memory** | 4-type file-based memory (user/feedback/project/reference) with MEMORY.md index |
+| **MCP** | Model Context Protocol server management (stdio/http/sse/ws) |
+| **Skills** | Reusable workflow templates (SKILL.md format) |
+| **Agents** | Build (full-access) and Plan (read-only), plus custom agents via `.claude/agents/*.md` |
+| **Themes** | 8 built-in themes with OpenCode JSON format, custom theme loading |
 
-### Extension Points (No Source Modification Needed)
+---
+
+## Theming
+
+Mythos uses the same theme format as OpenCode. Each theme defines a color palette (`defs`) and semantic color mappings (`theme`) with dark/light variants.
+
+### Switch Theme
+Use the theme selector dialog or the `/theme` command.
+
+### Custom Themes
+Drop a JSON file in any of these locations:
+- `~/.config/mythos/theme/*.json`
+- `<project-root>/theme/*.json`
+
+Theme JSON format:
+```json
+{
+  "defs": {
+    "bg": "#1a1b26",
+    "fg": "#c8d3f5",
+    "accent": "#82aaff"
+  },
+  "theme": {
+    "primary": { "dark": "accent", "light": "#2e7de9" },
+    "background": { "dark": "bg", "light": "#e1e2e7" },
+    "text": { "dark": "fg", "light": "#3760bf" }
+  }
+}
+```
+
+---
+
+## Keybinds
+
+### Global
+| Key | Action |
+|-----|--------|
+| `ctrl+c` | Interrupt (double-press to exit) |
+| `ctrl+x ctrl+c` | Exit |
+| `ctrl+x n` | New session |
+| `ctrl+x s` | Session list |
+| `ctrl+k` | Command palette |
+| `ctrl+x b` | Toggle sidebar |
+| `ctrl+x h` | Help dialog |
+| `Tab` | Switch agent (build / plan) |
+
+### Prompt
+| Key | Action |
+|-----|--------|
+| `Enter` | Send message |
+| `Shift+Enter` | Newline |
+| `Up/Down` | Prompt history |
+| `Escape` | Clear input |
+
+---
+
+## Extension Points
+
+No source modification needed:
 
 | Mechanism | Location | Format |
 |-----------|----------|--------|
@@ -156,25 +228,7 @@ src/
 | Custom Agents | `.claude/agents/name.md` | YAML frontmatter + Markdown |
 | MCP Servers | `.mcp.json` | JSON config |
 | Hooks | `~/.claude/settings.json` | JSON event-action mappings |
-
----
-
-## Feature Flags
-
-The `bun:bundle` `feature()` function controls feature gating. In this build, all features default to **disabled**. To enable features, edit `node_modules/bundle/index.js` (auto-generated by `bun install`):
-
-```javascript
-const ENABLED_FEATURES = new Set([
-  // Uncomment to enable:
-  // 'KAIROS',              // Assistant mode
-  // 'PROACTIVE',           // Proactive mode
-  // 'BRIDGE_MODE',         // IDE bridge
-  // 'VOICE_MODE',          // Voice input
-  // 'COORDINATOR_MODE',    // Multi-agent coordinator
-  // 'EXTRACT_MEMORIES',    // Background memory extraction
-  // 'TEAMMEM',             // Team memory
-])
-```
+| Custom Themes | `~/.config/mythos/theme/*.json` | OpenCode theme JSON |
 
 ---
 
@@ -190,16 +244,22 @@ const ENABLED_FEATURES = new Set([
 | Search | ripgrep |
 | Protocols | MCP SDK, LSP |
 | API | Anthropic SDK |
-| Telemetry | OpenTelemetry |
+| Video | Remotion (showcase GIFs) |
 
 ---
 
-## Scale
+## Environment Variables
 
-- **~1,900 source files**
-- **512,000+ lines of TypeScript**
-- **40+ tools**, **100+ commands**, **140+ UI components**
-- **20MB** compiled bundle
+Copy `.env.example` to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` | `1` | Disable upstream experimental flags |
+| `DISABLE_INSTALLATION_CHECKS` | `1` | Skip official install channel checks (needed for source builds) |
 
 ---
 
@@ -212,5 +272,4 @@ const ENABLED_FEATURES = new Set([
 
 ---
 
-If this helps your research, please give it a ⭐!
-
+If this helps your research, please give it a star!
