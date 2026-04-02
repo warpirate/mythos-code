@@ -18,6 +18,8 @@ import { useEffect, useState } from 'react';
 import { getSteps, shouldShowProjectOnboarding, incrementProjectOnboardingSeenCount } from '../../projectOnboardingState.js';
 import { CondensedLogo } from './CondensedLogo.js';
 import { OffscreenFreeze } from '../OffscreenFreeze.js';
+import { WelcomeV2 } from './WelcomeV2.js';
+import { isFullscreenEnvEnabled } from '../../utils/fullscreen.js';
 import { checkForReleaseNotesSync } from '../../utils/releaseNotes.js';
 import { getDumpPromptsPath } from 'src/services/api/dumpPrompts.js';
 import { isEnvTruthy } from 'src/utils/envUtils.js';
@@ -185,7 +187,7 @@ export function LogoV2() {
     let t16;
     let t17;
     if ($[15] === Symbol.for("react.memo_cache_sentinel")) {
-      t11 = <CondensedLogo />;
+      t11 = isFullscreenEnvEnabled() ? <WelcomeV2 /> : <CondensedLogo />;
       t12 = <VoiceModeNotice />;
       t13 = <Opus1mMergeNotice />;
       t14 = ChannelsNoticeModule && <ChannelsNoticeModule.ChannelsNotice />;

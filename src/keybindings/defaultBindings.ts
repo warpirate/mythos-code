@@ -337,4 +337,18 @@ export const DEFAULT_BINDINGS: KeybindingBlock[] = [
       i: 'plugin:install',
     },
   },
+  // Mythos TUI keybindings (OpenCode-style, ctrl+x leader prefix)
+  {
+    context: 'Global',
+    bindings: {
+      'ctrl+x ctrl+c': 'app:exit',
+      'ctrl+x n': 'mythos:newSession',
+      'ctrl+x s': 'mythos:sessionList',
+      'ctrl+k': 'mythos:commandPalette',
+      'ctrl+x b': 'mythos:toggleSidebar',
+      'ctrl+x h': 'mythos:help',
+      'ctrl+x m': 'mythos:modelSelector',
+      'ctrl+x t': 'mythos:themeSelector',
+    },
+  },
 ]

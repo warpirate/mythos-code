@@ -65,6 +65,7 @@ import { errorMessage } from '../../utils/errors.js';
 import { isBilledAsExtraUsage } from '../../utils/extraUsage.js';
 import { getFastModeUnavailableReason, isFastModeAvailable, isFastModeCooldown, isFastModeEnabled, isFastModeSupportedByModel } from '../../utils/fastMode.js';
 import { isFullscreenEnvEnabled } from '../../utils/fullscreen.js';
+import { useMythosTheme } from '../../utils/theme/index.js';
 import type { PromptInputHelpers } from '../../utils/handlePromptSubmit.js';
 import { getImageFromClipboard, PASTE_THRESHOLD } from '../../utils/imagePaste.js';
 import type { ImageDimensions } from '../../utils/imageResizer.js';
@@ -1960,6 +1961,7 @@ function PromptInput({
     }
   });
   const swarmBanner = useSwarmBanner();
+  const { theme: mythosTheme } = useMythosTheme();
   const fastModeCooldown = isFastModeEnabled() ? isFastModeCooldown() : false;
   const showFastIcon = isFastModeEnabled() ? isFastMode && (isFastModeAvailable() || fastModeCooldown) : false;
   const showFastIconHint = useShowFastIconHint(showFastIcon ?? false);
@@ -1967,7 +1969,8 @@ function PromptInput({
   // Show effort notification on startup and when effort changes.
   // Suppressed in brief/assistant mode — the value reflects the local
   // client's effort, not the connected agent's.
-  const effortNotificationText = briefOwnsGap ? undefined : getEffortNotificationText(effortValue, mainLoopModel);
+  // Also suppressed in fullscreen (MythosChrome) — sidebar shows this info.
+  const effortNotificationText = briefOwnsGap || isFullscreenEnvEnabled() ? undefined : getEffortNotificationText(effortValue, mainLoopModel);
   useEffect(() => {
     if (!effortNotificationText) {
       removeNotification('effort-level');
@@ -2234,7 +2237,7 @@ function PromptInput({
     return 'promptBorder';
   };
   if (isExternalEditorActive) {
-    return <Box flexDirection="row" alignItems="center" justifyContent="center" borderColor={getBorderColor()} borderStyle="single" borderLeft={false} borderRight={false} borderBottom={false} width="100%">
+    return <Box flexDirection="row" alignItems="center" justifyContent="center" borderColor={getBorderColor()} borderStyle="round" width="100%">
         <Text dimColor italic>
           Save and close editor to continue...
         </Text>
@@ -2265,7 +2268,32 @@ function PromptInput({
             </Box>
           </Box>
           <Text color={swarmBanner.bgColor}>{'─'.repeat(columns)}</Text>
-        </> : <Box flexDirection="row" alignItems="flex-start" justifyContent="flex-start" borderColor={getBorderColor()} borderStyle="round" borderLeft={false} borderRight={false} borderBottom width="100%" borderText={buildBorderText(showFastIcon ?? false, showFastIconHint, fastModeCooldown)}>
+        </> : isFullscreenEnvEnabled() ?
+        /* OpenCode-style prompt: thick left accent border, dark background */
+        <Box flexDirection="column" width="100%">
+          <Box width="100%" borderStyle="bold" borderLeft borderTop={false} borderBottom={false} borderRight={false} borderColor={getBorderColor()}>
+            <Box flexDirection="column" flexGrow={1} paddingLeft={2} paddingRight={2} paddingTop={1} backgroundColor={mythosTheme.backgroundElement}>
+              <Box flexDirection="row" alignItems="flex-start">
+                <Box flexGrow={1} flexShrink={1} onClick={handleInputClick}>
+                  {textInputElement}
+                </Box>
+              </Box>
+              {/* Agent / Model info bar — matches OpenCode prompt footer */}
+              <Box flexDirection="row" justifyContent="space-between" paddingTop={1}>
+                <Box flexDirection="row" gap={1}>
+                  <Text color={getBorderColor()} bold>{mode === 'bash' ? 'Shell' : 'Build'}</Text>
+                  {mode !== 'bash' && <Text color={mythosTheme.text}>{mainLoopModel}</Text>}
+                </Box>
+                <Box flexDirection="row" gap={2}>
+                  <Text color={mythosTheme.text}>tab <Text color={mythosTheme.textMuted}>agents</Text></Text>
+                  <Text color={mythosTheme.text}>ctrl+k <Text color={mythosTheme.textMuted}>commands</Text></Text>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+        :
+        <Box flexDirection="row" alignItems="flex-start" justifyContent="flex-start" borderColor={getBorderColor()} borderStyle="round" borderBottom width="100%" borderText={buildBorderTextWithLabel(mode === 'bash' ? 'shell' : 'build', showFastIcon ?? false, showFastIconHint, fastModeCooldown)}>
           <PromptInputModeIndicator mode={mode} isLoading={isLoading} viewingAgentName={viewingAgentName} viewingAgentColor={viewingAgentColor} />
           <Box flexGrow={1} flexShrink={1} onClick={handleInputClick}>
             {textInputElement}
@@ -2290,7 +2318,7 @@ function PromptInput({
     // bottom row. Keeping Notifications mounted prevents AutoUpdater's
     // initial-check effect from re-firing on every slash-completion
     // toggle (PR#22413).
-    <Box position="absolute" marginTop={briefOwnsGap ? -2 : -1} height={suggestions.length === 0 && !showAutoModeOptIn ? 1 : 0} width="100%" paddingLeft={2} paddingRight={1} flexDirection="column" justifyContent="flex-end" overflow="hidden">
+    <Box position="absolute" marginTop={briefOwnsGap ? -2 : -1} height={0} width="100%" paddingLeft={2} paddingRight={1} flexDirection="column" justifyContent="flex-end" overflow="hidden">
           <Notifications apiKeyStatus={apiKeyStatus} autoUpdaterResult={autoUpdaterResult} debug={debug} isAutoUpdating={isAutoUpdating} verbose={verbose} messages={messages} onAutoUpdaterResult={onAutoUpdaterResult} onChangeIsUpdating={setIsAutoUpdating} ideSelection={ideSelection} mcpClients={mcpClients} isInputWrapped={isInputWrapped} />
         </Box> : null}
     </Box>;
@@ -2333,6 +2361,25 @@ function buildBorderText(showFastIcon: boolean, showFastIconHint: boolean, fastM
     position: 'top',
     align: 'end',
     offset: 0
+  };
+}
+
+/**
+ * OpenCode-style border text: agent label on the left of the top border.
+ * Renders as: ┌─ build ─────────────────────────┐
+ * When fast mode is shown, appends it: ┌─ build ───── /fast ─┐
+ */
+function buildBorderTextWithLabel(agentLabel: string, showFastIcon: boolean, showFastIconHint: boolean, fastModeCooldown: boolean): BorderTextOptions {
+  let content = ` ${agentLabel} `;
+  if (showFastIcon) {
+    const fastSeg = showFastIconHint ? `${getFastIconString(true, fastModeCooldown)} ${chalk.dim('/fast')}` : getFastIconString(true, fastModeCooldown);
+    content = ` ${agentLabel} ${chalk.dim('·')} ${fastSeg} `;
+  }
+  return {
+    content,
+    position: 'top',
+    align: 'start',
+    offset: 1
   };
 }
 export default React.memo(PromptInput);

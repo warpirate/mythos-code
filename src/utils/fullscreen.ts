@@ -125,7 +125,8 @@ export function isFullscreenEnvEnabled(): boolean {
     }
     return false
   }
-  return process.env.USER_TYPE === 'ant'
+  // Mythos: always enable fullscreen by default (OpenCode-style TUI)
+  return true
 }
 
 /**

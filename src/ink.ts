@@ -1,5 +1,6 @@
 import { createElement, type ReactNode } from 'react'
 import { ThemeProvider } from './components/design-system/ThemeProvider.js'
+import { MythosThemeProvider } from './utils/theme/index.js'
 import inkRender, {
   type Instance,
   createRoot as inkCreateRoot,
@@ -11,8 +12,13 @@ export type { RenderOptions, Instance, Root }
 
 // Wrap all CC render calls with ThemeProvider so ThemedBox/ThemedText work
 // without every call site having to mount it. Ink itself is theme-agnostic.
+// MythosThemeProvider adds the new OpenCode-style theme context alongside.
 function withTheme(node: ReactNode): ReactNode {
-  return createElement(ThemeProvider, null, node)
+  return createElement(
+    MythosThemeProvider,
+    null,
+    createElement(ThemeProvider, null, node),
+  )
 }
 
 export async function render(
