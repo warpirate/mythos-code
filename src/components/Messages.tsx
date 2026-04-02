@@ -675,6 +675,8 @@ const MessagesImpl = ({
     return lowered;
   }, [tools, lookups_0]);
   return <>
+      {/* OpenCode-style: center logo vertically when no messages */}
+      {!hideLogo && !(renderRange && renderRange[0] > 0) && renderableMessages.length === 0 && <Box flexGrow={1} />}
       {/* Logo */}
       {!hideLogo && !(renderRange && renderRange[0] > 0) && <LogoHeader agentDefinitions={agentDefinitions} />}
 

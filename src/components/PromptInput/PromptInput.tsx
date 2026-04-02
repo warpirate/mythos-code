@@ -2234,7 +2234,7 @@ function PromptInput({
     return 'promptBorder';
   };
   if (isExternalEditorActive) {
-    return <Box flexDirection="row" alignItems="center" justifyContent="center" borderColor={getBorderColor()} borderStyle="round" borderLeft={false} borderRight={false} borderBottom width="100%">
+    return <Box flexDirection="row" alignItems="center" justifyContent="center" borderColor={getBorderColor()} borderStyle="single" borderLeft={false} borderRight={false} borderBottom={false} width="100%">
         <Text dimColor italic>
           Save and close editor to continue...
         </Text>

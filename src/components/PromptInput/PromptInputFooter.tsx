@@ -18,6 +18,7 @@ import type { AutoUpdaterResult } from '../../utils/autoUpdater.js';
 import { isFullscreenEnvEnabled } from '../../utils/fullscreen.js';
 import { isUndercover } from '../../utils/undercover.js';
 import { CoordinatorTaskPanel, useCoordinatorTaskCount } from '../CoordinatorAgentStatus.js';
+import { OpenCodeFooter } from '../OpenCodeFooter.js';
 import { getLastAssistantMessageId, StatusLine, statusLineShouldDisplay } from '../StatusLine.js';
 import { Notifications } from './Notifications.js';
 import { PromptInputFooterLeftSide } from './PromptInputFooterLeftSide.js';
@@ -148,6 +149,7 @@ function PromptInputFooter({
         </Box>
       </Box>
       {"external" === 'ant' && <CoordinatorTaskPanel />}
+      <OpenCodeFooter mcpClients={mcpClients} />
     </>;
 }
 export default memo(PromptInputFooter);

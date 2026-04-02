@@ -5,7 +5,7 @@ if (typeof globalThis.MACRO === 'undefined') {
     BUILD_TIME: new Date().toISOString(),
     PACKAGE_URL: '@anthropic-ai/claude-code',
     NATIVE_PACKAGE_URL: undefined,
-    FEEDBACK_CHANNEL: '#claude-code-research',
+    FEEDBACK_CHANNEL: '#mythos-cli',
     ISSUES_EXPLAINER: 'https://github.com/beita6969/claude-code/issues',
     VERSION_CHANGELOG: '',
   };
@@ -933,7 +933,7 @@ async function run(): Promise<CommanderCommand> {
     // terminal shell integration may mirror the process name to the tab.
     // After init() so settings.json env can also gate this (gh-4765).
     if (!isEnvTruthy(process.env.CLAUDE_CODE_DISABLE_TERMINAL_TITLE)) {
-      process.title = 'claude';
+      process.title = 'mythos-cli';
     }
 
     // Attach logging sinks so subcommand handlers can use logEvent/logError.
@@ -978,7 +978,7 @@ async function run(): Promise<CommanderCommand> {
     }
     profileCheckpoint('preAction_after_settings_sync');
   });
-  program.name('claude').description(`Claude Code - starts an interactive session by default, use -p/--print for non-interactive output`).argument('[prompt]', 'Your prompt', String)
+  program.name('mythos').description(`MYTHOS-CLI - starts an interactive session by default, use -p/--print for non-interactive output`).argument('[prompt]', 'Your prompt', String)
   // Subcommands inherit helpOption via commander's copyInheritedSettings —
   // setting it once here covers mcp, plugin, auth, and all other subcommands.
   .helpOption('-h, --help', 'Display help for command').option('-d, --debug [filter]', 'Enable debug mode with optional category filtering (e.g., "api,hooks" or "!1p,!file")', (_value: string | true) => {

@@ -113,81 +113,85 @@ export type ThemeSetting = (typeof THEME_SETTINGS)[number]
  * from users' custom terminal ANSI color definitions
  */
 const lightTheme: Theme = {
-  autoAccept: 'rgb(135,0,255)', // Electric violet
-  bashBorder: 'rgb(255,0,135)', // Vibrant pink
-  claude: 'rgb(215,119,87)', // Claude orange
-  claudeShimmer: 'rgb(245,149,117)', // Lighter claude orange for shimmer effect
-  claudeBlue_FOR_SYSTEM_SPINNER: 'rgb(87,105,247)', // Medium blue for system spinner
-  claudeBlueShimmer_FOR_SYSTEM_SPINNER: 'rgb(117,135,255)', // Lighter blue for system spinner shimmer
-  permission: 'rgb(87,105,247)', // Medium blue
-  permissionShimmer: 'rgb(137,155,255)', // Lighter blue for shimmer effect
-  planMode: 'rgb(0,102,102)', // Muted teal
-  ide: 'rgb(71,130,200)', // Muted blue
-  promptBorder: 'rgb(153,153,153)', // Medium gray
-  promptBorderShimmer: 'rgb(183,183,183)', // Lighter gray for shimmer effect
-  text: 'rgb(0,0,0)', // Black
-  inverseText: 'rgb(255,255,255)', // White
-  inactive: 'rgb(102,102,102)', // Dark gray
-  inactiveShimmer: 'rgb(142,142,142)', // Lighter gray for shimmer effect
-  subtle: 'rgb(175,175,175)', // Light gray
-  suggestion: 'rgb(87,105,247)', // Medium blue
-  remember: 'rgb(0,0,255)', // Blue
-  background: 'rgb(0,153,153)', // Cyan
-  success: 'rgb(44,122,57)', // Green
-  error: 'rgb(171,43,63)', // Red
-  warning: 'rgb(150,108,30)', // Amber
-  merged: 'rgb(135,0,255)', // Electric violet (matches autoAccept)
-  warningShimmer: 'rgb(200,158,80)', // Lighter amber for shimmer effect
-  diffAdded: 'rgb(105,219,124)', // Light green
-  diffRemoved: 'rgb(255,168,180)', // Light red
-  diffAddedDimmed: 'rgb(199,225,203)', // Very light green
-  diffRemovedDimmed: 'rgb(253,210,216)', // Very light red
-  diffAddedWord: 'rgb(47,157,68)', // Medium green
-  diffRemovedWord: 'rgb(209,69,75)', // Medium red
+  // OpenCode "opencode" light theme palette
+  // background: #ffffff, backgroundPanel: #fafafa, backgroundElement: #f5f5f5
+  // primary: #3b7dd8 (blue), secondary: #7b5bb6, accent: #d68c27
+  // text: #1a1a1a, textMuted: #8a8a8a, border: #b8b8b8
+  autoAccept: '#7b5bb6', // secondary purple
+  bashBorder: '#3b7dd8', // primary blue
+  claude: '#3b7dd8', // primary blue
+  claudeShimmer: '#2968c3', // darker blue
+  claudeBlue_FOR_SYSTEM_SPINNER: '#7b5bb6', // secondary purple
+  claudeBlueShimmer_FOR_SYSTEM_SPINNER: '#6a4aa5', // darker purple
+  permission: '#7b5bb6', // secondary purple
+  permissionShimmer: '#6a4aa5', // darker purple
+  planMode: '#318795', // info cyan
+  ide: '#3b7dd8', // primary blue
+  promptBorder: '#b8b8b8', // border
+  promptBorderShimmer: '#d4d4d4', // border subtle
+  text: '#1a1a1a', // text
+  inverseText: '#ffffff', // background
+  inactive: '#8a8a8a', // textMuted
+  inactiveShimmer: '#a0a0a0', // lighter muted
+  subtle: '#d4d4d4', // step6
+  suggestion: '#3b7dd8', // primary blue
+  remember: '#3b7dd8', // primary blue
+  background: '#ffffff', // white background
+  success: '#3d9a57', // green
+  error: '#d1383d', // red
+  warning: '#d68c27', // orange/warning (accent)
+  merged: '#7b5bb6', // secondary purple
+  warningShimmer: '#e5a847', // lighter orange
+  diffAdded: '#d5e5d5', // diff added bg
+  diffRemoved: '#f7d8db', // diff removed bg
+  diffAddedDimmed: '#c5d5c5', // diff added line number bg
+  diffRemovedDimmed: '#e7c8cb', // diff removed line number bg
+  diffAddedWord: '#4db380', // diff highlight added
+  diffRemovedWord: '#f52a65', // diff highlight removed
   // Agent colors
-  red_FOR_SUBAGENTS_ONLY: 'rgb(220,38,38)', // Red 600
-  blue_FOR_SUBAGENTS_ONLY: 'rgb(37,99,235)', // Blue 600
-  green_FOR_SUBAGENTS_ONLY: 'rgb(22,163,74)', // Green 600
-  yellow_FOR_SUBAGENTS_ONLY: 'rgb(202,138,4)', // Yellow 600
-  purple_FOR_SUBAGENTS_ONLY: 'rgb(147,51,234)', // Purple 600
-  orange_FOR_SUBAGENTS_ONLY: 'rgb(234,88,12)', // Orange 600
-  pink_FOR_SUBAGENTS_ONLY: 'rgb(219,39,119)', // Pink 600
-  cyan_FOR_SUBAGENTS_ONLY: 'rgb(8,145,178)', // Cyan 600
+  red_FOR_SUBAGENTS_ONLY: '#d1383d',
+  blue_FOR_SUBAGENTS_ONLY: '#3b7dd8',
+  green_FOR_SUBAGENTS_ONLY: '#3d9a57',
+  yellow_FOR_SUBAGENTS_ONLY: '#b0851f',
+  purple_FOR_SUBAGENTS_ONLY: '#7b5bb6',
+  orange_FOR_SUBAGENTS_ONLY: '#d68c27',
+  pink_FOR_SUBAGENTS_ONLY: '#d1383d',
+  cyan_FOR_SUBAGENTS_ONLY: '#318795',
   // Grove colors
-  professionalBlue: 'rgb(106,155,204)',
+  professionalBlue: '#3b7dd8',
   // Chrome colors
-  chromeYellow: 'rgb(251,188,4)', // Chrome yellow
+  chromeYellow: '#b0851f',
   // TUI V2 colors
-  clawd_body: 'rgb(215,119,87)',
-  clawd_background: 'rgb(0,0,0)',
-  userMessageBackground: 'rgb(240, 240, 240)', // Slightly darker grey for optimal contrast
-  userMessageBackgroundHover: 'rgb(252, 252, 252)', // ≥250 to quantize distinct from base at 256-color level
-  messageActionsBackground: 'rgb(232, 236, 244)', // cool gray — darker than userMsg 240 (visible on white), slight blue toward `suggestion`
-  selectionBg: 'rgb(180, 213, 255)', // classic light-mode selection blue (macOS/VS Code-ish); dark fgs stay readable
-  bashMessageBackgroundColor: 'rgb(250, 245, 250)',
+  clawd_body: '#3b7dd8',
+  clawd_background: '#ffffff',
+  userMessageBackground: '#f5f5f5', // backgroundElement
+  userMessageBackgroundHover: '#ebebeb', // step4
+  messageActionsBackground: '#f5f5f5', // backgroundElement
+  selectionBg: '#e1e1e1', // step5
+  bashMessageBackgroundColor: '#fafafa', // backgroundPanel
 
-  memoryBackgroundColor: 'rgb(230, 245, 250)',
-  rate_limit_fill: 'rgb(87,105,247)', // Medium blue
-  rate_limit_empty: 'rgb(39,47,111)', // Dark blue
-  fastMode: 'rgb(255,106,0)', // Electric orange
-  fastModeShimmer: 'rgb(255,150,50)', // Lighter orange for shimmer
+  memoryBackgroundColor: '#f5f5f5', // backgroundElement
+  rate_limit_fill: '#3b7dd8', // primary
+  rate_limit_empty: '#e1e1e1', // step5
+  fastMode: '#d68c27', // accent orange
+  fastModeShimmer: '#e5a847', // lighter orange
   // Brief/assistant mode
-  briefLabelYou: 'rgb(37,99,235)', // Blue
-  briefLabelClaude: 'rgb(215,119,87)', // Brand orange
-  rainbow_red: 'rgb(235,95,87)',
-  rainbow_orange: 'rgb(245,139,87)',
-  rainbow_yellow: 'rgb(250,195,95)',
-  rainbow_green: 'rgb(145,200,130)',
-  rainbow_blue: 'rgb(130,170,220)',
-  rainbow_indigo: 'rgb(155,130,200)',
-  rainbow_violet: 'rgb(200,130,180)',
-  rainbow_red_shimmer: 'rgb(250,155,147)',
-  rainbow_orange_shimmer: 'rgb(255,185,137)',
-  rainbow_yellow_shimmer: 'rgb(255,225,155)',
-  rainbow_green_shimmer: 'rgb(185,230,180)',
-  rainbow_blue_shimmer: 'rgb(180,205,240)',
-  rainbow_indigo_shimmer: 'rgb(195,180,230)',
-  rainbow_violet_shimmer: 'rgb(230,180,210)',
+  briefLabelYou: '#3b7dd8', // primary blue
+  briefLabelClaude: '#d68c27', // accent orange
+  rainbow_red: '#d1383d',
+  rainbow_orange: '#d68c27',
+  rainbow_yellow: '#b0851f',
+  rainbow_green: '#3d9a57',
+  rainbow_blue: '#318795',
+  rainbow_indigo: '#3b7dd8',
+  rainbow_violet: '#7b5bb6',
+  rainbow_red_shimmer: '#e05560',
+  rainbow_orange_shimmer: '#e5a847',
+  rainbow_yellow_shimmer: '#c9a040',
+  rainbow_green_shimmer: '#5ab370',
+  rainbow_blue_shimmer: '#4aa0ae',
+  rainbow_indigo_shimmer: '#5a9ae0',
+  rainbow_violet_shimmer: '#9478cc',
 }
 
 /**
@@ -438,80 +442,84 @@ const lightDaltonizedTheme: Theme = {
  * from users' custom terminal ANSI color definitions
  */
 const darkTheme: Theme = {
-  autoAccept: 'rgb(175,135,255)', // Electric violet
-  bashBorder: 'rgb(253,93,177)', // Bright pink
-  claude: 'rgb(215,119,87)', // Claude orange
-  claudeShimmer: 'rgb(235,159,127)', // Lighter claude orange for shimmer effect
-  claudeBlue_FOR_SYSTEM_SPINNER: 'rgb(147,165,255)', // Blue for system spinner
-  claudeBlueShimmer_FOR_SYSTEM_SPINNER: 'rgb(177,195,255)', // Lighter blue for system spinner shimmer
-  permission: 'rgb(177,185,249)', // Light blue-purple
-  permissionShimmer: 'rgb(207,215,255)', // Lighter blue-purple for shimmer
-  planMode: 'rgb(72,150,140)', // Muted sage green
-  ide: 'rgb(71,130,200)', // Muted blue
-  promptBorder: 'rgb(136,136,136)', // Medium gray
-  promptBorderShimmer: 'rgb(166,166,166)', // Lighter gray for shimmer
-  text: 'rgb(255,255,255)', // White
-  inverseText: 'rgb(0,0,0)', // Black
-  inactive: 'rgb(153,153,153)', // Light gray
-  inactiveShimmer: 'rgb(193,193,193)', // Lighter gray for shimmer effect
-  subtle: 'rgb(80,80,80)', // Dark gray
-  suggestion: 'rgb(177,185,249)', // Light blue-purple
-  remember: 'rgb(177,185,249)', // Light blue-purple
-  background: 'rgb(0,204,204)', // Bright cyan
-  success: 'rgb(78,186,101)', // Bright green
-  error: 'rgb(255,107,128)', // Bright red
-  warning: 'rgb(255,193,7)', // Bright amber
-  merged: 'rgb(175,135,255)', // Electric violet (matches autoAccept)
-  warningShimmer: 'rgb(255,223,57)', // Lighter amber for shimmer
-  diffAdded: 'rgb(34,92,43)', // Dark green
-  diffRemoved: 'rgb(122,41,54)', // Dark red
-  diffAddedDimmed: 'rgb(71,88,74)', // Very dark green
-  diffRemovedDimmed: 'rgb(105,72,77)', // Very dark red
-  diffAddedWord: 'rgb(56,166,96)', // Medium green
-  diffRemovedWord: 'rgb(179,89,107)', // Softer red (less intense than bright red)
+  // OpenCode "opencode" dark theme palette
+  // background: #0a0a0a, backgroundPanel: #141414, backgroundElement: #1e1e1e
+  // primary: #fab283 (warm orange), secondary: #5c9cf5, accent: #9d7cd8
+  // text: #eeeeee, textMuted: #808080, border: #323232, borderActive: #fab283
+  autoAccept: '#9d7cd8', // accent purple
+  bashBorder: '#fab283', // primary warm orange
+  claude: '#fab283', // primary warm orange
+  claudeShimmer: '#ffc09f', // lighter orange
+  claudeBlue_FOR_SYSTEM_SPINNER: '#5c9cf5', // secondary blue
+  claudeBlueShimmer_FOR_SYSTEM_SPINNER: '#7cb4ff', // lighter blue
+  permission: '#5c9cf5', // secondary blue
+  permissionShimmer: '#7cb4ff', // lighter blue
+  planMode: '#56b6c2', // info cyan
+  ide: '#5c9cf5', // secondary blue
+  promptBorder: '#323232', // border
+  promptBorderShimmer: '#484848', // border step7
+  text: '#eeeeee', // text
+  inverseText: '#0a0a0a', // background
+  inactive: '#808080', // textMuted
+  inactiveShimmer: '#a0a0a0', // lighter muted
+  subtle: '#3c3c3c', // step6
+  suggestion: '#5c9cf5', // secondary blue
+  remember: '#5c9cf5', // secondary blue
+  background: '#0a0a0a', // pure black background
+  success: '#7fd88f', // green
+  error: '#e06c75', // red
+  warning: '#f5a742', // orange/warning
+  merged: '#9d7cd8', // accent purple
+  warningShimmer: '#ffc09f', // lighter orange
+  diffAdded: '#20303b', // diff added bg
+  diffRemoved: '#37222c', // diff removed bg
+  diffAddedDimmed: '#1b2b34', // diff added line number bg
+  diffRemovedDimmed: '#2d1f26', // diff removed line number bg
+  diffAddedWord: '#4fd6be', // diff highlight added
+  diffRemovedWord: '#e26a75', // diff highlight removed
   // Agent colors
-  red_FOR_SUBAGENTS_ONLY: 'rgb(220,38,38)', // Red 600
-  blue_FOR_SUBAGENTS_ONLY: 'rgb(37,99,235)', // Blue 600
-  green_FOR_SUBAGENTS_ONLY: 'rgb(22,163,74)', // Green 600
-  yellow_FOR_SUBAGENTS_ONLY: 'rgb(202,138,4)', // Yellow 600
-  purple_FOR_SUBAGENTS_ONLY: 'rgb(147,51,234)', // Purple 600
-  orange_FOR_SUBAGENTS_ONLY: 'rgb(234,88,12)', // Orange 600
-  pink_FOR_SUBAGENTS_ONLY: 'rgb(219,39,119)', // Pink 600
-  cyan_FOR_SUBAGENTS_ONLY: 'rgb(8,145,178)', // Cyan 600
+  red_FOR_SUBAGENTS_ONLY: '#e06c75',
+  blue_FOR_SUBAGENTS_ONLY: '#5c9cf5',
+  green_FOR_SUBAGENTS_ONLY: '#7fd88f',
+  yellow_FOR_SUBAGENTS_ONLY: '#e5c07b',
+  purple_FOR_SUBAGENTS_ONLY: '#9d7cd8',
+  orange_FOR_SUBAGENTS_ONLY: '#f5a742',
+  pink_FOR_SUBAGENTS_ONLY: '#e06c75',
+  cyan_FOR_SUBAGENTS_ONLY: '#56b6c2',
   // Grove colors
-  professionalBlue: 'rgb(106,155,204)',
+  professionalBlue: '#5c9cf5',
   // Chrome colors
-  chromeYellow: 'rgb(251,188,4)', // Chrome yellow
+  chromeYellow: '#e5c07b',
   // TUI V2 colors
-  clawd_body: 'rgb(215,119,87)',
-  clawd_background: 'rgb(0,0,0)',
-  userMessageBackground: 'rgb(55, 55, 55)', // Lighter grey for better visual contrast
-  userMessageBackgroundHover: 'rgb(70, 70, 70)',
-  messageActionsBackground: 'rgb(44, 50, 62)', // cool gray, slight blue
-  selectionBg: 'rgb(38, 79, 120)', // classic dark-mode selection blue (VS Code dark default); light fgs stay readable
-  bashMessageBackgroundColor: 'rgb(65, 60, 65)',
+  clawd_body: '#fab283',
+  clawd_background: '#0a0a0a',
+  userMessageBackground: '#1e1e1e', // backgroundElement
+  userMessageBackgroundHover: '#282828', // step4
+  messageActionsBackground: '#1e1e1e', // backgroundElement
+  selectionBg: '#323232', // border color
+  bashMessageBackgroundColor: '#141414', // backgroundPanel
 
-  memoryBackgroundColor: 'rgb(55, 65, 70)',
-  rate_limit_fill: 'rgb(177,185,249)', // Light blue-purple
-  rate_limit_empty: 'rgb(80,83,112)', // Medium blue-purple
-  fastMode: 'rgb(255,120,20)', // Electric orange for dark bg
-  fastModeShimmer: 'rgb(255,165,70)', // Lighter orange for shimmer
-  briefLabelYou: 'rgb(122,180,232)', // Light blue
-  briefLabelClaude: 'rgb(215,119,87)', // Brand orange
-  rainbow_red: 'rgb(235,95,87)',
-  rainbow_orange: 'rgb(245,139,87)',
-  rainbow_yellow: 'rgb(250,195,95)',
-  rainbow_green: 'rgb(145,200,130)',
-  rainbow_blue: 'rgb(130,170,220)',
-  rainbow_indigo: 'rgb(155,130,200)',
-  rainbow_violet: 'rgb(200,130,180)',
-  rainbow_red_shimmer: 'rgb(250,155,147)',
-  rainbow_orange_shimmer: 'rgb(255,185,137)',
-  rainbow_yellow_shimmer: 'rgb(255,225,155)',
-  rainbow_green_shimmer: 'rgb(185,230,180)',
-  rainbow_blue_shimmer: 'rgb(180,205,240)',
-  rainbow_indigo_shimmer: 'rgb(195,180,230)',
-  rainbow_violet_shimmer: 'rgb(230,180,210)',
+  memoryBackgroundColor: '#1e1e1e', // backgroundElement
+  rate_limit_fill: '#fab283', // primary
+  rate_limit_empty: '#323232', // border
+  fastMode: '#fab283', // primary warm orange
+  fastModeShimmer: '#ffc09f', // lighter orange
+  briefLabelYou: '#5c9cf5', // secondary blue
+  briefLabelClaude: '#fab283', // primary warm orange
+  rainbow_red: '#e06c75',
+  rainbow_orange: '#f5a742',
+  rainbow_yellow: '#e5c07b',
+  rainbow_green: '#7fd88f',
+  rainbow_blue: '#56b6c2',
+  rainbow_indigo: '#5c9cf5',
+  rainbow_violet: '#9d7cd8',
+  rainbow_red_shimmer: '#e8888f',
+  rainbow_orange_shimmer: '#f7b96a',
+  rainbow_yellow_shimmer: '#ebd09a',
+  rainbow_green_shimmer: '#9fe5a8',
+  rainbow_blue_shimmer: '#78c8d2',
+  rainbow_indigo_shimmer: '#7cb4ff',
+  rainbow_violet_shimmer: '#b59be0',
 }
 
 /**
